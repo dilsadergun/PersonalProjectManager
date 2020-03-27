@@ -2,7 +2,6 @@ package com.dilsad.project.manager.entitiy;
 
 import java.util.Date;
 
-import javax.annotation.sql.DataSourceDefinition;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
