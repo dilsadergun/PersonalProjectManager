@@ -3,8 +3,10 @@ package com.dilsad.project.manager.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dilsad.project.manager.entitiy.Backlog;
 import com.dilsad.project.manager.entitiy.Project;
 import com.dilsad.project.manager.exception.ProjectIdException;
+import com.dilsad.project.manager.repository.BacklogRepository;
 import com.dilsad.project.manager.repository.ProjectRepository;
 
 @Service
@@ -13,11 +15,25 @@ public class ProjectService {
 	@Autowired
 	private ProjectRepository projectRepository;
 	
+	@Autowired
+	private BacklogRepository backlogRepository;
+	
 	public Project saveOrUpdateProject(Project project) {
 		
 		try {
+			String projectIdentifier =project.getProjectIdentifier().toUpperCase();
 			
-			project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+			project.setProjectIdentifier(projectIdentifier);
+			
+			if(project.getId()==null) {
+				
+				Backlog backlog = new Backlog();
+				project.setBacklog(backlog);
+				backlog.setProject(project);
+				backlog.setProjectIdentifier(projectIdentifier);
+			} else {
+				project.setBacklog(backlogRepository.findByProjectIdentifier(projectIdentifier));
+			}
 			return projectRepository.save(project);
 
 			

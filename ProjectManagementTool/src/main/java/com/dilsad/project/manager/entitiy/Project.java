@@ -2,11 +2,14 @@ package com.dilsad.project.manager.entitiy;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
@@ -39,16 +42,20 @@ public class Project {
 	private String description;
 	
 	@JsonFormat(pattern = "yyy-mm-dd")
-	private Date startDate;
+	private Date start_date;
 	
 	@JsonFormat(pattern = "yyy-mm-dd")
-	private Date endDate;
+	private Date end_date;
 
 	@JsonFormat(pattern = "yyy-mm-dd")
+	@Column(updatable =false)
 	private Date created_At;
 	
 	@JsonFormat(pattern = "yyy-mm-dd")
 	private Date updated_At;
+	
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+	private Backlog backlog;
 	
 	@PrePersist
 	protected void onCreate() {
