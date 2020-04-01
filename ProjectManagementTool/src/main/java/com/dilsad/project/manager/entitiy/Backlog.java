@@ -36,7 +36,7 @@ public class Backlog {
 	@JsonIgnore //infinite recursion problem solving, apply on child !
 	private Project project;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "backlog")
+	@OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER, mappedBy = "backlog", orphanRemoval = true)
 	private List<ProjectTask> projectTasks = new ArrayList<>();
 	
 	

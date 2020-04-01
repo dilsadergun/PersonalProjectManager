@@ -29,7 +29,7 @@ public class ProjectTask {
 	@GeneratedValue(strategy= GenerationType.IDENTITY )
 	private Long id;
 	
-	@Column(updatable = false)
+	@Column(updatable = false, unique = true)
 	private String projectSequence;
 	
 	@NotBlank(message = "Please include a project summary")
@@ -57,7 +57,7 @@ public class ProjectTask {
 		this.created_At = new Date();
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "backlog_id", updatable = false, nullable=false)
 	@JsonIgnore //infinite recursion problem solving, apply on child !
 	private Backlog backlog;
