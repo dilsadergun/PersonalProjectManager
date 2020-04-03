@@ -1,5 +1,7 @@
 package com.dilsad.project.manager.controller;
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,11 @@ import com.dilsad.project.manager.entitiy.ProjectTask;
 import com.dilsad.project.manager.service.MapValidationErrorService;
 import com.dilsad.project.manager.service.ProjectTaskService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/backlog")
+@Slf4j
 public class BacklogController {
 	
 	@Autowired
@@ -28,13 +33,13 @@ public class BacklogController {
 	
 	@RequestMapping( value= "/{backlog_id}",produces = "application/json", method = { RequestMethod.PUT,RequestMethod.POST})
 	public ResponseEntity<?> getProjectById(@Valid @RequestBody ProjectTask projectTask, 
-			BindingResult result,@PathVariable String backlog_id){
+			BindingResult result,@PathVariable String backlog_id, Principal principal){
 		
 		ResponseEntity<?> errorMap =mapValidationErrorService.MapValidationService(result);
 		
 		if(errorMap != null) return errorMap;
 		
-		ProjectTask projectTask1 = projectTaskService.addProjectTask(backlog_id, projectTask);
+		ProjectTask projectTask1 = projectTaskService.addProjectTask(backlog_id, projectTask, principal.getName());
 		
 		
 		return new ResponseEntity<ProjectTask>(projectTask1, HttpStatus.CREATED);
@@ -43,36 +48,36 @@ public class BacklogController {
 	}	
 	
 	@RequestMapping( value= "/{backlog_id}",produces = "application/json", method = {RequestMethod.GET})
-	public Iterable<ProjectTask> getProjectBacklog(@PathVariable String backlog_id){
+	public Iterable<ProjectTask> getProjectBacklog(@PathVariable String backlog_id, Principal principal){
 		
-		return (projectTaskService.findByBacklogId(backlog_id));
+		return (projectTaskService.findByBacklogId(backlog_id, principal.getName()));
 	}
 	
 	@RequestMapping( value= "/{backlog_id}/{pt_id}",produces = "application/json", method = {RequestMethod.GET})
-	public ResponseEntity<?> getProjectTask(@PathVariable String backlog_id, @PathVariable String pt_id ){
+	public ResponseEntity<?> getProjectTask(@PathVariable String backlog_id, @PathVariable String pt_id, Principal principal ){
 		
-		ProjectTask projectTask = projectTaskService.findPTByProjectSequence(backlog_id, pt_id);
+		ProjectTask projectTask = projectTaskService.findPTByProjectSequence(backlog_id, pt_id, principal.getName());
 		
 		return new ResponseEntity<ProjectTask>(projectTask, HttpStatus.OK);
 	}
 	
 	@RequestMapping( value= "/{backlog_id}/{pt_id}",produces = "application/json", method = {RequestMethod.PATCH})
 	public ResponseEntity<?> updateProjectTask(@Valid @RequestBody ProjectTask projectTask, BindingResult result,
-												@PathVariable String backlog_id, @PathVariable String pt_id ){
+												@PathVariable String backlog_id, @PathVariable String pt_id, Principal principal ){
 		
 		ResponseEntity<?> errorMap =mapValidationErrorService.MapValidationService(result);
 		
 		if(errorMap != null) return errorMap;
-		
-		ProjectTask updatedTask= projectTaskService.updatePTByProjectSequence(projectTask, backlog_id, pt_id);
+				
+		ProjectTask updatedTask= projectTaskService.updatePTByProjectSequence(projectTask, backlog_id, pt_id, principal.getName());
 		
 		return new ResponseEntity<ProjectTask>(updatedTask, HttpStatus.OK);
 	}
 	
 	@RequestMapping( value= "/{backlog_id}/{pt_id}",produces = "application/json", method = {RequestMethod.DELETE})
-	public ResponseEntity<?> deleteProjectTask(@PathVariable String backlog_id, @PathVariable String pt_id ){
+	public ResponseEntity<?> deleteProjectTask(@PathVariable String backlog_id, @PathVariable String pt_id, Principal principal ){
 		
-		projectTaskService.deleteProjectByProjectSequence(backlog_id, pt_id); 
+		projectTaskService.deleteProjectByProjectSequence(backlog_id, pt_id, principal.getName()); 
 		
 		return new ResponseEntity<String>("Project task with ID: "+ pt_id + " deleted", HttpStatus.OK);
 	}
