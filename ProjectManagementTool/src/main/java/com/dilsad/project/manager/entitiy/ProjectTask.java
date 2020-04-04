@@ -2,7 +2,7 @@ package com.dilsad.project.manager.entitiy;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,6 +41,7 @@ public class ProjectTask {
 	
 	private Integer priority;
 	
+	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date dueDate;
 	
 	//ManyToOne with Backlog
@@ -48,8 +49,10 @@ public class ProjectTask {
 	@Column(updatable = false)
 	private String projectIdentifier;
 	
+	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date created_At;
 	
+	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date updated_At;
 	
 	@PrePersist
